@@ -42,5 +42,6 @@ nosetest
 
 * [topic0](https://github.com/wmitsuda/topic0) is a repository of event signatures, which could partially replace the current contract ABI lookup.
 * Contract ABIs could/should be persisted in some long-term storage. A lightweight approach is to use [sqlitedict](https://github.com/RaRe-Technologies/sqlitedict)
+* Similarly, failed proxy lookups should also be persisted, so we don't do it each time we miss the event ABI.
 * Since log entries are independent, event processing should be done via multithreading.
 * Better testing, error handling, etc...
