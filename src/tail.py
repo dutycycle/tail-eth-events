@@ -84,11 +84,12 @@ def get_proxied_to(addr: Address) -> Address:
     return "0x" + proxied_addr.hex()[26:]
 
 
-def log_to_event(addr: Address, log) -> Event:
+def log_to_event(log) -> Event:
     """
     Given a log, return an Event object.
     """
 
+    addr = log['address']
     event = Event(contract=addr)
     proxied_to = None
 
@@ -131,13 +132,12 @@ if __name__ == "__main__":
         cur_block = w3.eth.get_block_number()
         if cur_block != last_block:
             for log in w3.eth.get_logs({}):
-                addr = log["address"]
-                event = log_to_event(addr, log)
+                event = log_to_event(log)
                 proxy_out = (
-                    f"[Proxied To {event.proxied_to}]" if event.proxied_to else ""
+                    f", ProxiedTo {event.proxied_to}" if event.proxied_to else ""
                 )
                 print(
-                    f"[Block {cur_block}] [Contract {addr}] {proxy_out} {event.full_signature()}"
+                    f"[Block {cur_block}] [Contract {event.contract}{proxy_out}] {event.full_signature()}"
                 )
             last_block = cur_block
         time.sleep(POLL_TIME_SECONDS)

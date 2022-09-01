@@ -8,7 +8,7 @@ Small utility to tail events in the Ethereum log from the current block onward, 
 [Block 15454857] [Contract 0xDe07f45688cb6CfAaC398c1485860e186D55996D]  Transfer(indexed address sender=0x353d601aae0fc29908bb46a26cac562ad1a5bff2,indexed address receiver=0x0000000000000000000000000000000000000000,uint256 value=17268575233016576578)
 [Block 15454857] [Contract 0x8eF11c51a666C53Aeeec504f120cd1435E451342]  Withdraw(indexed address owner=0x353d601aae0fc29908bb46a26cac562ad1a5bff2,uint256 shares=17268575233016576578,uint256 amount=18257840581989549385)
 [Block 15454857] [Contract 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2]  Transfer(indexed address src=0x7685cd3ddd862b8745b1082a6acb19e14eaa74f3,indexed address dst=0xbeefbabeea323f07c59926295205d3b7a17e8638,uint256 wad=610600133740867388)
-[Block 15454857] [Contract 0xba5BDe662c17e2aDFF1075610382B9B691296350] [Proxied To 0x31acaaea0529894e7c3a5c70d3f9ee6d7804684f] Transfer(indexed address from=0xbeefbabeea323f07c59926295205d3b7a17e8638,indexed address to=0x7685cd3ddd862b8745b1082a6acb19e14eaa74f3,uint256 value=4724999999999999737856)
+[Block 15454857] [Contract 0xba5BDe662c17e2aDFF1075610382B9B691296350, ProxiedTo 0x31acaaea0529894e7c3a5c70d3f9ee6d7804684f] Transfer(indexed address from=0xbeefbabeea323f07c59926295205d3b7a17e8638,indexed address to=0x7685cd3ddd862b8745b1082a6acb19e14eaa74f3,uint256 value=4724999999999999737856)
 [Block 15454857] [Contract 0x7685cD3ddD862b8745B1082A6aCB19E14EAA74F3]  Anonymous/Unknown()
 [Block 15454857] [Contract 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48]  Anonymous/Unknown()
 ```
