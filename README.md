@@ -2,7 +2,7 @@
 
 ## Overview
 
-Script to tail events in the Ethereum log from the current block onward, in human readable(-ish) format. For example:
+Small utility to tail events in the Ethereum log from the current block onward, in human readable(-ish) format. For example:
 
 ```
 [Block 15454857] [Contract 0xDe07f45688cb6CfAaC398c1485860e186D55996D]  Transfer(indexed address sender=0x353d601aae0fc29908bb46a26cac562ad1a5bff2,indexed address receiver=0x0000000000000000000000000000000000000000,uint256 value=17268575233016576578)
@@ -13,7 +13,9 @@ Script to tail events in the Ethereum log from the current block onward, in huma
 [Block 15454857] [Contract 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48]  Anonymous/Unknown()
 ```
 
-It uses web3.py to get all log data in the current block. Then, for each log entry, it attempts to find the contract ABI, including for proxied contracts. If it can find the ABI it will decode the event arguments using the ABI. Short polling is used to check when a new block is mined.
+It uses [web3.py](https://github.com/ethereum/web3.py) to get all log data in the current block. Then, for each log entry, it attempts to find the contract ABI, including for proxied contracts, using the [Etherscan API](https://etherscan.io/apis). If it can find the ABI it will decode the event arguments using the ABI.
+
+Short polling is used to check when a new block is mined.
 
 ## Usage
 
@@ -41,4 +43,4 @@ nosetest
 * [topic0](https://github.com/wmitsuda/topic0) is a repository of event signatures, which could partially replace the current contract ABI lookup.
 * Contract ABIs could/should be persisted in some long-term storage. A lightweight approach is to use [sqlitedict](https://github.com/RaRe-Technologies/sqlitedict)
 * Since log entries are independent, event processing should be done via multithreading.
-* Better logging, error handling, etc...
+* Better testing, error handling, etc...
