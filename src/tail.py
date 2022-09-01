@@ -9,9 +9,19 @@ from web3 import Web3
 
 ETH_NODE_WEBSOCKET = os.environ["ETH_NODE_WEBSOCKET"]
 ETHERSCAN_API_KEY = os.environ["ETHERSCAN_API_KEY"]
+
 ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
- # store the zero address -> empty ABI mapping since it comes up often when we look for proxied contracts
-CONTRACT_ABIS = {ZERO_ADDRESS: []}
+
+# standard slot for storing address of a proxy's implementation contract
+# see https://eips.ethereum.org/EIPS/eip-1967 for details
+PROXY_IMPLEMENTATION_SLOT = "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc"
+
+# polling time for checking for next block; can be short since processing events in block is slow
+POLL_TIME_SECONDS=1
+
+ # should be in some type of  persistent storage; we map zero address to empty abi since it
+ # appears often while searching for proxy implementations
+contract_abis : "dict[str,Abi]" = {ZERO_ADDRESS: []}
 
 w3 = Web3(Web3.WebsocketProvider(ETH_NODE_WEBSOCKET))
 
@@ -21,8 +31,8 @@ def get_contract_abi(address: Address) -> Abi:
     Retrieve a contract's ABI from Etherscan.
     """
 
-    if address in CONTRACT_ABIS:
-        return CONTRACT_ABIS[address]
+    if address in contract_abis:
+        return contract_abis[address]
 
     url = f"https://api.etherscan.io/api?module=contract&action=getabi&address={address}&apikey={ETHERSCAN_API_KEY}"
 
@@ -34,13 +44,13 @@ def get_contract_abi(address: Address) -> Abi:
 
     if response.json()["status"] == "1":
         abi = json.loads(response.json()["result"])
-        CONTRACT_ABIS[address] = abi
+        contract_abis[address] = abi
         return abi
 
     return []
 
 
-def abi_to_event_signatures(abi: "list[dict]") -> "dict[str,Event]":
+def abi_to_event_signatures(abi: Abi) -> "dict[str,Event]":
     """
     Given a contract ABI as a list of Python dictionaries, extract events and return a dict mapping
     their hashed signature to the
@@ -68,10 +78,8 @@ def get_proxied_to(addr: Address) -> Address:
     we're just trying to find matching event ABIs.
     """
 
-    # the below is the Solidity bytes32(uint256(keccak256('eip1967.proxy.implementation')) - 1))
     # there's also some older proxy slots that were used before EIP-1967 that you could add in
-    slot = "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc"
-    proxied_addr = w3.eth.get_storage_at(addr, slot)
+    proxied_addr = w3.eth.get_storage_at(addr, PROXY_IMPLEMENTATION_SLOT)
 
     return "0x" + proxied_addr.hex()[26:]
 
@@ -132,4 +140,4 @@ if __name__ == "__main__":
                     f"[Block {cur_block}] [Contract {addr}] {proxy_out} {event.full_signature()}"
                 )
             last_block = cur_block
-        time.sleep(1)
+        time.sleep(POLL_TIME_SECONDS)
